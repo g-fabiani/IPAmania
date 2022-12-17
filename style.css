@@ -1,0 +1,35 @@
+body {
+	margin: 100px;
+}
+
+
+.grid-container {
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-gap: 30px;
+	width: 400px;
+}
+
+
+.card {
+	height: 100px;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: black;
+	text-align: center;
+	box-shadow: 10px 10px 5px darkgrey;
+}
+
+.symbol {
+	font-size: 64px;
+	width: 100px;
+}
+
+.description {
+	width: 250px;
+	font-size: 24px;
+}
+
+[selected="true"] {
+	background-color: lightgreen;
+}
