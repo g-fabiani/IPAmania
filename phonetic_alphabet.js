@@ -1,4 +1,20 @@
+// Costanti
+const MATCHES = 5;		// numero di coppie per round
+const DELAY = 400;
+
+
 // Funzioni ausiliarie
+
+function pickN(array, n) {
+	result = [];
+	for (var i = 0; i < n; i++) {
+		do {
+			var index = Math.trunc(Math.random() * array.length);
+		} while (result.includes(array[index]))
+		result.push(array[index]);
+	}
+	return result;
+}
 
 function addText(node, text) {
 	textNode = document.createTextNode(text);
@@ -104,11 +120,6 @@ function handlerDescriptionSelection() {
 	}
 }
 
-// Il numero di coppie per ogni round
-const MATCHES = 5;
-// Stabilisce un ritardo in numero di millisecondi
-const DELAY = 400;
-
 var gridNode;
 var symbols = [];
 var descriptions = [];
@@ -126,13 +137,20 @@ function handlerLoad() {
 		selectedSymbol = null;
 		selectedDescription = null;
 
+		// Sceglie le tessere per il round corrente
+		var currentSymbols = pickN(Object.keys(IPA_VOWELS), MATCHES);
+		var currentDescriptions = pickN(currentSymbols, 5);
+
+
 		// Genera dinamicamente le tessere simbolo e descrizione
 		for (var i = 0; i < MATCHES; i++) {
 			var symbolId = "s" + String(i);
+			var currentSymbol = currentSymbols[i];
 			var descriptionId = "d" + String(i);
+			var currentDescription = currentDescriptions[i];
 
 			var symbolNode = document.getElementById(symbolId);
-			var descriptionNode =document.getElementById(descriptionId);
+			var descriptionNode = document.getElementById(descriptionId);
 
 			symbolNode.setAttribute("selected", "false");
 			descriptionNode.setAttribute("selected", "false");
@@ -142,11 +160,11 @@ function handlerLoad() {
 			descriptionNode.setAttribute("error", "false");
 
 
-			addText(symbolNode, IPA_VOWELS[i].symbol);
-			addText(descriptionNode, IPA_VOWELS[i].description);
+			addText(symbolNode, IPA_VOWELS[currentSymbol].symbol);
+			addText(descriptionNode, IPA_VOWELS[currentDescription].description);
 
-			keySymbols[symbolId] = i;
-			keyDescriptions[descriptionId] = i;
+			keySymbols[symbolId] = currentSymbol;
+			keyDescriptions[descriptionId] = currentDescription;
 
 			symbols.push(symbolNode);
 			descriptions.push(descriptionNode);
@@ -177,4 +195,26 @@ const IPA_VOWELS = {
 	2 : {symbol: "\u0268", description: "Vocale centrale chiusa non arrotondata"},
 	3 : {symbol: "\u0289", description: "Vocale centrale chiusa arrotondata"},
 	4 : {symbol: "\u026f", description: "Vocale posteriore chiusa non arrotondata"},
+	5 : {symbol: "\u0075", description: "Vocale posteriore chiusa arrotondata"},
+	6 : {symbol: "\u026a", description: "Vocale quasi anteriore quasi chiusa non arrotondata"},
+	7 : {symbol: "\u028f", description: "Vocale quasi anteriore quasi chiusa arrotondata"},
+	8 : {symbol: "\u028a", description: "Vocale quasi posteriore quasi chiusa arrotondata"},
+	9 : {symbol: "\u0065", description: "Vocale anteriore semichiusa non arrotondata"},
+	10 : {symbol: "\u00f8", description: "Vocale anteriore semichiusa arrotondata"},
+	11 : {symbol: "\u0258", description: "Vocale centrale semichiusa non arrotondata"},
+	12 : {symbol: "\u0275", description: "Vocale centrale semichiusa arrotondata"},
+	13 : {symbol: "\u0264", description: "Vocale posteriore semichiusa non arrotondata"},
+	14 : {symbol: "\u006f", description: "Vocale posteriore semichiusa arrotondata"},
+	15 : {symbol: "\u025b", description: "Vocale anteriore semiaperta non arrotondata"},
+	16 : {symbol: "\u0153", description: "Vocale anteriore semiaperta arrotondata"},
+	17 : {symbol: "\u025c", description: "Vocale centrale semiaperta non arrotondata"},
+	18 : {symbol: "\u025e", description: "Vocale centrale semiaperta arrotondata"},
+	19 : {symbol: "\u0254", description: "Vocale posteriore semiaperta arrotondata"},
+	20 : {symbol: "\u00e6", description: "Vocale anteriore quasi aperta non arrotondata"},	
+	21 : {symbol: "\u0250", description: "Vocale centrale quasi aperta"},
+	22 : {symbol: "\u0061", description: "Vocale anteriore aperta non arrotondata"},
+	23 : {symbol: "\u0276", description: "Vocale anteriore aperta arrotondata"},
+	24 : {symbol: "\u0061", description: "Vocale centrale aperta non arrotondata"},
+	25 : {symbol: "\u0251", description: "Vocale posteriore aperta non arrotondata"},
+	26 : {symbol: "\u0252", description: "Vocale posteriore aperta arrotondata"},
 }
