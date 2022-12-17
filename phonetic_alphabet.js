@@ -21,18 +21,37 @@ function deselectAll() {
 	}
 }
 
-function checkMatch() {
+function signalError() {
+	selectedSymbol.setAttribute("error", "true");
+	selectedDescription.setAttribute("error", "true");
+}
 
+function resetError() {
+	selectedSymbol.setAttribute("error", "false");
+	selectedDescription.setAttribute("error", "false");
+	deselectAll();
+}
+
+function checkMatch() {
 	if (keySymbols[selectedSymbol.id] == keyDescriptions[selectedDescription.id]) {
 		console.log("It's a match");
 		selectedSymbol.setAttribute("matched", "true");
 		selectedDescription.setAttribute("matched", "true");
-	} else {
-		console.log("Sorry, it's not a match");
-	}
 
-	// Al termine deseleziona simbolo e descrizione
-	setTimeout(deselectAll, DELAY);
+		matched++;
+		if (matched == MATCHES) {
+			console.log("hai vinto");
+		}
+
+		// Dopo un piccolo ritardo deseleziona entrambe le tessere
+		setTimeout(deselectAll, DELAY);
+	} else {
+
+		console.log("Sorry, it's not a match");
+		signalError();
+		console.log(selectedSymbol, selectedDescription);
+		setTimeout(resetError, DELAY);
+	}
 }
 
 // Handler di eventi
@@ -64,6 +83,10 @@ function handlerSymbolSelection() {
 
 function handlerDescriptionSelection() {
 	try {
+		// Non è possibile selezionare tessere che sono già state accoppiate
+		if (this.getAttribute("matched") == "true") {
+			return;
+		}
 
 		if (selectedDescription) {
 			selectedDescription.setAttribute("selected", "false");
@@ -91,6 +114,7 @@ var symbols = [];
 var descriptions = [];
 var keySymbols = {};
 var keyDescriptions = {};
+var matched = 0;
 
 
 var selectedSymbol;
@@ -114,8 +138,9 @@ function handlerLoad() {
 			descriptionNode.setAttribute("selected", "false");
 			symbolNode.setAttribute("matched", "false");
 			descriptionNode.setAttribute("matched", "false");
+			symbolNode.setAttribute("error", "false");
+			descriptionNode.setAttribute("error", "false");
 
-			console.log(symbolNode);
 
 			addText(symbolNode, IPA_VOWELS[i].symbol);
 			addText(descriptionNode, IPA_VOWELS[i].description);

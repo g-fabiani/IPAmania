@@ -1,5 +1,7 @@
 body {
-	margin: 100px;
+	margin: 30px;
+	display: flex;
+	justify-content: center;
 }
 
 
@@ -32,4 +34,8 @@ body {
 
 [selected="true"], [matched="true"]{
 	background-color: lightgreen;
+}
+
+[error="true"] {
+	background-color: orangered;
 }
