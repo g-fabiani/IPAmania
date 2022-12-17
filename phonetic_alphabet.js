@@ -214,7 +214,6 @@ const IPA_VOWELS = {
 	21 : {symbol: "\u0250", description: "Vocale centrale quasi aperta"},
 	22 : {symbol: "\u0061", description: "Vocale anteriore aperta non arrotondata"},
 	23 : {symbol: "\u0276", description: "Vocale anteriore aperta arrotondata"},
-	24 : {symbol: "\u0061", description: "Vocale centrale aperta non arrotondata"},
-	25 : {symbol: "\u0251", description: "Vocale posteriore aperta non arrotondata"},
-	26 : {symbol: "\u0252", description: "Vocale posteriore aperta arrotondata"},
+	24 : {symbol: "\u0251", description: "Vocale posteriore aperta non arrotondata"},
+	25 : {symbol: "\u0252", description: "Vocale posteriore aperta arrotondata"},
 }
