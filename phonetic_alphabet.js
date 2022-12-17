@@ -25,6 +25,8 @@ function checkMatch() {
 
 	if (keySymbols[selectedSymbol.id] == keyDescriptions[selectedDescription.id]) {
 		console.log("It's a match");
+		selectedSymbol.setAttribute("matched", "true");
+		selectedDescription.setAttribute("matched", "true");
 	} else {
 		console.log("Sorry, it's not a match");
 	}
@@ -37,6 +39,12 @@ function checkMatch() {
 
 function handlerSymbolSelection() {
 	try {
+		// Non è possibile selezionare tessere che sono già state accoppiate
+		if (this.getAttribute("matched") == "true")
+		{
+			return;
+		}
+
 		if (selectedSymbol) {
 			selectedSymbol.setAttribute("selected", "false");
 		}
@@ -85,11 +93,14 @@ var keySymbols = {};
 var keyDescriptions = {};
 
 
-var selectedSymbol = null;
-var selectedDescription = null;
+var selectedSymbol;
+var selectedDescription;
 
 function handlerLoad() {
 	try {
+
+		selectedSymbol = null;
+		selectedDescription = null;
 
 		// Genera dinamicamente le tessere simbolo e descrizione
 		for (var i = 0; i < MATCHES; i++) {
@@ -98,6 +109,11 @@ function handlerLoad() {
 
 			var symbolNode = document.getElementById(symbolId);
 			var descriptionNode =document.getElementById(descriptionId);
+
+			symbolNode.setAttribute("selected", "false");
+			descriptionNode.setAttribute("selected", "false");
+			symbolNode.setAttribute("matched", "false");
+			descriptionNode.setAttribute("matched", "false");
 
 			console.log(symbolNode);
 
