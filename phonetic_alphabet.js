@@ -165,6 +165,12 @@ function handlerSymbolSelection() {
 		}
 
 		if (selectedSymbol) {
+			// Cliccare su una tessera già selezionata la deseleziona
+			if (selectedSymbol == this) {
+				selectedSymbol.setAttribute("selected", "false");
+				selectedSymbol = null;
+				return; 
+			}
 			selectedSymbol.setAttribute("selected", "false");
 		}
 
@@ -189,6 +195,12 @@ function handlerDescriptionSelection() {
 		}
 
 		if (selectedDescription) {
+			if (selectedDescription == this) {
+				// Cliccare su una tessera già selezionata la deseleziona
+				selectedDescription.setAttribute("selected", "false");
+				selectedDescription = null;
+				return;
+			}
 			selectedDescription.setAttribute("selected", "false");
 		}
 			selectedDescription = this;
