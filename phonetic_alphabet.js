@@ -1,12 +1,14 @@
+"use strict"
+
 // Costanti
 const MATCHES = 5;		// numero di coppie per round
-const DELAY = 400;
+const DELAY = 500;
 
 
 // Funzioni ausiliarie
 
 function pickN(array, n) {
-	result = [];
+	var result = [];
 	for (var i = 0; i < n; i++) {
 		do {
 			var index = Math.trunc(Math.random() * array.length);
@@ -17,7 +19,7 @@ function pickN(array, n) {
 }
 
 function addText(node, text) {
-	textNode = document.createTextNode(text);
+	var textNode = document.createTextNode(text);
 	if (node.childNodes.length > 0){
 		node.replaceChild(textNode, node.firstChild);
 	} else {
@@ -50,22 +52,21 @@ function resetError() {
 
 function checkMatch() {
 	if (keySymbols[selectedSymbol.id] == keyDescriptions[selectedDescription.id]) {
-		console.log("It's a match");
 		selectedSymbol.setAttribute("matched", "true");
 		selectedDescription.setAttribute("matched", "true");
 
 		matched++;
+		console.log(matched);
 		if (matched == MATCHES) {
 			console.log("hai vinto");
 		}
 
-		// Dopo un piccolo ritardo deseleziona entrambe le tessere
-		setTimeout(deselectAll, DELAY);
-	} else {
+		deselectAll();
 
-		console.log("Sorry, it's not a match");
+	} else {
+		penalities++;
+		console.log(penalities);
 		signalError();
-		console.log(selectedSymbol, selectedDescription);
 		setTimeout(resetError, DELAY);
 	}
 }
@@ -120,12 +121,14 @@ function handlerDescriptionSelection() {
 	}
 }
 
-var gridNode;
+var newGameNode;
+
 var symbols = [];
 var descriptions = [];
 var keySymbols = {};
 var keyDescriptions = {};
-var matched = 0;
+var matched;
+var penalities;
 
 
 var selectedSymbol;
@@ -134,8 +137,15 @@ var selectedDescription;
 function handlerLoad() {
 	try {
 
+		newGameNode = document.getElementById("new_game");
+		newGameNode.onclick = handlerLoad;
+
 		selectedSymbol = null;
 		selectedDescription = null;
+
+		// Azzera successi e penalità
+		matched = 0;
+		penalities = 0;
 
 		// Sceglie le tessere per il round corrente
 		var currentSymbols = pickN(Object.keys(IPA_VOWELS), MATCHES);

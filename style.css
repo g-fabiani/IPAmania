@@ -29,10 +29,18 @@ body {
 
 .description {
 	width: 250px;
-	font-size: 24px;
+	font-size: 22px;
 }
 
-[selected="true"], [matched="true"]{
+.btn {
+	font-size: 18px;
+}
+
+[selected="true"] {
+	background-color: lightgray;
+}
+
+[matched="true"]{
 	background-color: lightgreen;
 }
 
