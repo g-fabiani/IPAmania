@@ -178,7 +178,9 @@ function handlerLoad() {
 			var descriptionNode = document.createElement("div");
 
 			symbolNode.setAttribute("class", "card symbol");
+			symbolNode.id = symbolId;
 			descriptionNode.setAttribute("class", "card description");
+			descriptionNode.id = descriptionId;
 
 			cardGridNode.appendChild(symbolNode);
 			cardGridNode.appendChild(descriptionNode);
