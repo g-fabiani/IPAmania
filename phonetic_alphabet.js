@@ -66,25 +66,45 @@ function checkMatch() {
 		console.log(matched);
 		if (matched == MATCHES) {
 			console.log("hai vinto");
+			clearInterval(timer);
 		}
 
 		deselectAll();
 
 	} else {
 		penalities++;
-		console.log(penalities);
+		updateScore();
+
 		signalError();
 		setTimeout(resetError, DELAY);
 	}
+}
+
+function updateScore() {
+	var s = "Penalità: " + String(penalities);
+
+	addText(scoreNode, s);
+}
+
+function displaTimer() {
+	var s = "Tempo: " + String(time/10) + "s";
+
+	addText(timerNode, s);
+}
+
+function updateTimer() {
+	time += 1;
+	displaTimer();
 }
 
 // Gestori di eventi
 
 function handlerNewGame() {
 	try {
-		// Azzera successi e penalità
+		// Azzera successi, penalità e tempo
 		matched = 0;
 		penalities = 0;
+		time = 0;
 
 		// Azzera le associazioni tra id delle tessere e chiavi dell'array IPA_VOWELS
 		keySymbols = {};
@@ -121,6 +141,15 @@ function handlerNewGame() {
 			// Ricorda l'associazione tra la tessera descrizione e la chiave che identifica la vocale
 			keyDescriptions[descriptionNode.id] = currentDescription;
 		}
+
+		updateScore();
+
+		if (timer) {
+			clearInterval(timer);
+		}
+
+		displaTimer();
+		timer = setInterval(updateTimer, 100);
 
 	} catch (e) {
 		alert("handlerNewGame " + e);
@@ -177,6 +206,8 @@ function handlerDescriptionSelection() {
 
 var newGameNode;
 var cardGridNode;
+var scoreNode;
+var timerNode;
 
 var symbolNodes = [];
 var descriptionNodes = [];
@@ -186,6 +217,8 @@ var keySymbols;
 var keyDescriptions;
 var matched;
 var penalities;
+var time;
+var timer
 
 var selectedSymbol;
 var selectedDescription;
@@ -195,15 +228,12 @@ function handlerLoad() {
 
 		newGameNode = document.getElementById("new_game");
 		cardGridNode = document.getElementById("card_grid");
-		newGameNode.onclick = handlerNewGame;
-
-		selectedSymbol = null;
-		selectedDescription = null;
+		scoreNode = document.getElementById("score");
+		timerNode = document.getElementById('timer')
 
 		for (var i = 0; i < MATCHES; i++) {
 
 			// Genera dinamicamente le tessere simbolo e descrizione
-
 			var symbolId = "s" + String(i);
 			var descriptionId = "d" + String(i);
 
@@ -215,14 +245,20 @@ function handlerLoad() {
 			descriptionNode.setAttribute("class", "card description");
 			descriptionNode.id = descriptionId;
 
-			cardGridNode.appendChild(symbolNode);
-			cardGridNode.appendChild(descriptionNode);
+			cardGridNode.insertBefore(symbolNode, scoreNode);
+			cardGridNode.insertBefore(descriptionNode, scoreNode);
 
 			symbolNodes.push(symbolNode);
 			descriptionNodes.push(descriptionNode);
 		}
 
+		selectedSymbol = null;
+		selectedDescription = null;
+
 		handlerNewGame();
+
+		// Gestisce i click sul pulsante Nuova partita
+		newGameNode.onclick = handlerNewGame;
 
 		// Gestisce i click sulle tessere che rappresentano simboli
 		for (symbolNode of symbolNodes) {
