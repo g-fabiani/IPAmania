@@ -8,6 +8,7 @@ const DELAY = 500;
 // Funzioni ausiliarie
 
 function pickN(array, n) {
+	// Sceglie casualmente cinque elementi da un array
 	var result = [];
 	for (var i = 0; i < n; i++) {
 		do {
@@ -50,7 +51,7 @@ function resetError() {
 	deselectAll();
 }
 
-function resetCard(cardNode) {
+function resetCardAttributes(cardNode) {
 	cardNode.setAttribute("selected", "false");
 	cardNode.setAttribute("matched", "false");
 	cardNode.setAttribute("error", "false");
@@ -81,6 +82,45 @@ function checkMatch() {
 
 function handlerNewGame() {
 	try {
+		// Azzera successi e penalità
+		matched = 0;
+		penalities = 0;
+
+		// Azzera le associazioni tra id delle tessere e chiavi dell'array IPA_VOWELS
+		keySymbols = {};
+		keyDescriptions = {};
+
+		// Sceglie le tessere per il round corrente
+		var currentSymbols = pickN(Object.keys(IPA_VOWELS), MATCHES);
+		var currentDescriptions = pickN(currentSymbols, MATCHES);
+
+		// Associa i simboli alle tessere
+		for (var i = 0; i < MATCHES; i++) {
+			var symbolNode = symbolNodes[i];
+			var currentSymbol = currentSymbols[i];
+
+			// Scrive il simbolo sulla tessera
+			addText(symbolNode, IPA_VOWELS[currentSymbol].symbol);
+			// Resetta gli attributi selected, matched e error della tessera a false
+			resetCardAttributes(symbolNode);
+
+			// Ricorda l'associazioe tra la tessera simbolo e la chiave che identifica la vocale
+			keySymbols[symbolNode.id] = currentSymbol;
+		}
+
+		// Associa le descrizioni alle tessere
+		for (var i = 0; i < MATCHES; i++) {
+			var descriptionNode = descriptionNodes[i];
+			var currentDescription = currentDescriptions[i];
+
+			// Scrive la descrizione sulla tessera
+			addText(descriptionNode, IPA_VOWELS[currentDescription].description);
+			// Resetta gli attributi selected, matched e error della tessera a false
+			resetCardAttributes(descriptionNode);
+
+			// Ricorda l'associazione tra la tessera descrizione e la chiave che identifica la vocale
+			keyDescriptions[descriptionNode.id] = currentDescription;
+		}
 
 	} catch (e) {
 		alert("handlerNewGame " + e);
@@ -136,14 +176,16 @@ function handlerDescriptionSelection() {
 }
 
 var newGameNode;
+var cardGridNode;
 
-var symbols = [];
-var descriptions = [];
-var keySymbols = {};
-var keyDescriptions = {};
+var symbolNodes = [];
+var descriptionNodes = [];
+
+
+var keySymbols;
+var keyDescriptions;
 var matched;
 var penalities;
-
 
 var selectedSymbol;
 var selectedDescription;
@@ -152,27 +194,18 @@ function handlerLoad() {
 	try {
 
 		newGameNode = document.getElementById("new_game");
-		var cardGridNode = document.getElementById("card_grid");
+		cardGridNode = document.getElementById("card_grid");
 		newGameNode.onclick = handlerNewGame;
 
 		selectedSymbol = null;
 		selectedDescription = null;
 
-		// Azzera successi e penalità
-		matched = 0;
-		penalities = 0;
-
-		// Sceglie le tessere per il round corrente
-		var currentSymbols = pickN(Object.keys(IPA_VOWELS), MATCHES);
-		var currentDescriptions = pickN(currentSymbols, 5);
-
-
-		// Genera dinamicamente le tessere simbolo e descrizione
 		for (var i = 0; i < MATCHES; i++) {
+
+			// Genera dinamicamente le tessere simbolo e descrizione
+
 			var symbolId = "s" + String(i);
-			var currentSymbol = currentSymbols[i];
 			var descriptionId = "d" + String(i);
-			var currentDescription = currentDescriptions[i];
 
 			var symbolNode = document.createElement("div");
 			var descriptionNode = document.createElement("div");
@@ -185,27 +218,19 @@ function handlerLoad() {
 			cardGridNode.appendChild(symbolNode);
 			cardGridNode.appendChild(descriptionNode);
 
-			resetCard(symbolNode);
-			resetCard(descriptionNode);
-
-
-			addText(symbolNode, IPA_VOWELS[currentSymbol].symbol);
-			addText(descriptionNode, IPA_VOWELS[currentDescription].description);
-
-			keySymbols[symbolId] = currentSymbol;
-			keyDescriptions[descriptionId] = currentDescription;
-
-			symbols.push(symbolNode);
-			descriptions.push(descriptionNode);
+			symbolNodes.push(symbolNode);
+			descriptionNodes.push(descriptionNode);
 		}
 
+		handlerNewGame();
+
 		// Gestisce i click sulle tessere che rappresentano simboli
-		for (symbolNode of symbols) {
+		for (symbolNode of symbolNodes) {
 			symbolNode.onclick = handlerSymbolSelection;
 		}
 
 		// Gestisce i click sulle tessere che rappresentano descrizioni
-		for (descriptionNode of descriptions) {
+		for (descriptionNode of descriptionNodes) {
 			descriptionNode.onclick = handlerDescriptionSelection;
 		}
 
@@ -217,7 +242,10 @@ function handlerLoad() {
 
 window.onload = handlerLoad;
 
-
+/*
+Ogni vocale dell'alfabeto fonetico internazionale è identificata univocamente
+da un id numerico associato al suo simbolo e alla sua descrizione
+*/
 const IPA_VOWELS = {
 	0 : {symbol: "\u0069", description: "Vocale anteriore chiusa non arrotondata"},
 	1 : {symbol: "\u0079", description:"Vocale anteriore chiusa arrotondata"},

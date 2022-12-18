@@ -36,6 +36,10 @@ body {
 	font-size: 18px;
 }
 
+.score {
+	grid-column: span 2;
+}
+
 [selected="true"] {
 	background-color: lightgray;
 }
