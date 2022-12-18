@@ -50,6 +50,12 @@ function resetError() {
 	deselectAll();
 }
 
+function resetCard(cardNode) {
+	cardNode.setAttribute("selected", "false");
+	cardNode.setAttribute("matched", "false");
+	cardNode.setAttribute("error", "false");
+}
+
 function checkMatch() {
 	if (keySymbols[selectedSymbol.id] == keyDescriptions[selectedDescription.id]) {
 		selectedSymbol.setAttribute("matched", "true");
@@ -71,7 +77,15 @@ function checkMatch() {
 	}
 }
 
-// Handler di eventi
+// Gestori di eventi
+
+function handlerNewGame() {
+	try {
+
+	} catch (e) {
+		alert("handlerNewGame " + e);
+	}
+}
 
 function handlerSymbolSelection() {
 	try {
@@ -138,7 +152,8 @@ function handlerLoad() {
 	try {
 
 		newGameNode = document.getElementById("new_game");
-		newGameNode.onclick = handlerLoad;
+		var cardGridNode = document.getElementById("card_grid");
+		newGameNode.onclick = handlerNewGame;
 
 		selectedSymbol = null;
 		selectedDescription = null;
@@ -159,15 +174,17 @@ function handlerLoad() {
 			var descriptionId = "d" + String(i);
 			var currentDescription = currentDescriptions[i];
 
-			var symbolNode = document.getElementById(symbolId);
-			var descriptionNode = document.getElementById(descriptionId);
+			var symbolNode = document.createElement("div");
+			var descriptionNode = document.createElement("div");
 
-			symbolNode.setAttribute("selected", "false");
-			descriptionNode.setAttribute("selected", "false");
-			symbolNode.setAttribute("matched", "false");
-			descriptionNode.setAttribute("matched", "false");
-			symbolNode.setAttribute("error", "false");
-			descriptionNode.setAttribute("error", "false");
+			symbolNode.setAttribute("class", "card symbol");
+			descriptionNode.setAttribute("class", "card description");
+
+			cardGridNode.appendChild(symbolNode);
+			cardGridNode.appendChild(descriptionNode);
+
+			resetCard(symbolNode);
+			resetCard(descriptionNode);
 
 
 			addText(symbolNode, IPA_VOWELS[currentSymbol].symbol);

@@ -9,7 +9,7 @@ body {
 	display: grid;
 	grid-template-columns: auto auto;
 	grid-gap: 30px;
-	width: 400px;
+	margin: 30px;
 }
 
 
