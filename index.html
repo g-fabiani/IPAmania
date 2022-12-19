@@ -21,10 +21,6 @@
 			<p>Associa ciascun simbolo vocalico dell'<b>Alfabeto Fonetico Internazionale</b> alla corrispondente descrizione senza fare errori.</p>
 			<p>Ma attenzione! Il tempo scorre!</p>
 
-			<!--Tabella in cui visualizzare gli highscore-->
-			<table id="highscores">
-			</table>
-
 			<input type="text"
 					id="player"
 					placeholder="Nome giocatore">
@@ -32,6 +28,20 @@
 				class="btn" 
 				id="new_game"
 				value="Nuova partita">
+
+			<!--Tabella in cui visualizzare gli highscore-->
+			<h3>High Scores</h3>
+			<table id="highscores">
+				<thead>
+					<tr>
+						<th>Giocatore</th>
+						<th>Penalità</th>
+						<th>Tempo</th>
+					</tr>
+				</thead>
+			<!--Qui vengono generati dinamicamente gli highscores-->
+				<tbody></tbody>
+			</table>
 		</div>	
 		<!--Visualizza messaggio di vittoria-->
 		<span class="message" id="message"></span>

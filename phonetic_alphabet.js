@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 // Costanti
 const MATCHES = 6;		// numero di coppie per round
@@ -66,6 +66,34 @@ function compare(a, b) {
 	}
 }
 
+function displayHighScores() {
+	// Genera dinamicamente la tabella degli highscores
+	var tableBody = highScoresNode.lastElementChild;
+
+	while (tableBody.childNodes.length > 0) {
+		tableBody.removeChild(tableBody.firstChild);
+	}
+
+	for (var i = 0; i < highScores.length; i++) {
+		var tablerow = document.createElement("tr");
+
+		var nameCell = document.createElement("td"); 
+		var penaltiesCell = document.createElement("td"); 
+		var timeCell = document.createElement("td"); 
+
+		addText(nameCell, highScores[i].name);
+		addText(penaltiesCell, highScores[i].penalties);
+		addText(timeCell, highScores[i].time);
+
+		tablerow.appendChild(nameCell);
+		tablerow.appendChild(penaltiesCell);
+		tablerow.appendChild(timeCell);
+
+		tableBody.appendChild(tablerow);
+	}
+}
+
+
 function endGame() {
 		addText(messageNode, "Vittoria! Premi sul pulsante nuova partita per giocare ancora");
 		clearInterval(timer);
@@ -78,43 +106,7 @@ function endGame() {
 					highScores = highScores.slice(0, 3);
 		}
 
-		while (highScoresNode.childNodes.length > 0) {
-			highScoresNode.removeChild(highScoresNode.firstChild);
-		}
-
-		var tablerow = document.createElement("tr");
-
-		var nameCell = document.createElement("th"); 
-		var penaltiesCell = document.createElement("th"); 
-		var timeCell = document.createElement("th");
-
-		addText(nameCell, "Giocatore");
-		addText(penaltiesCell, "Penalità");
-		addText(timeCell, "Tempo");
-
-		tablerow.appendChild(nameCell);
-		tablerow.appendChild(penaltiesCell);
-		tablerow.appendChild(timeCell);
-
-		highScoresNode.appendChild(tablerow);
-
-		for (var i = 0; i < highScores.length; i++) {
-			var tablerow = document.createElement("tr");
-
-			var nameCell = document.createElement("td"); 
-			var penaltiesCell = document.createElement("td"); 
-			var timeCell = document.createElement("td"); 
-
-			addText(nameCell, highScores[i].name);
-			addText(penaltiesCell, highScores[i].penalties);
-			addText(timeCell, highScores[i].time);
-
-			tablerow.appendChild(nameCell);
-			tablerow.appendChild(penaltiesCell);
-			tablerow.appendChild(timeCell);
-
-			highScoresNode.appendChild(tablerow);
-		}
+		displayHighScores();
 }
 
 function checkMatch() {
@@ -228,8 +220,6 @@ function handlerSymbolSelection() {
 			return;
 		}
 
-		console.log(this);
-
 		if (selectedSymbolNode) {
 			// Cliccare su una tessera già selezionata la deseleziona
 			if (selectedSymbolNode == this) {
@@ -259,8 +249,6 @@ function handlerDescriptionSelection() {
 		if (this.getAttribute("active") == "false") {
 			return;
 		}
-
-		console.log(this);
 
 		if (selectedDescriptionNode) {
 			if (selectedDescriptionNode == this) {
