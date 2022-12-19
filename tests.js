@@ -1,17 +1,23 @@
-function pickN(array, n) {
-	result = [];
-	for (var i = 0; i < n; i++) {
-		do {
-			var index = Math.trunc(Math.random() * array.length);
-		} while (result.includes(array[index]))
-		result.push(array[index]);
+"use strict";
+
+var highScores = [
+	{name: "Giocatore 2", penalities:3, time: 35.5},
+	{name: "Giocatore 1", penalities: 3, time: 30},
+	{name: "Giocatore 3", penalities: 0, time: 20},
+	{name: "Giocatore 4", penalities: 0, time: 22.2}
+	];
+
+console.log(highScores);
+
+function compare(a, b) {
+	if (a.penalities == b.penalities) {
+		return a.time - b.time;
+	} else {
+		return a.penalities - b.penalities;
 	}
-	return result;
 }
 
-
-a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-b = pickN(a, 5);
-c = pickN(b, 5);
-console.log(b);
-console.log(c);
+highScores.sort(compare);
+//highScores = highScores.slice(0, 3);
+console.log("Sorted");
+console.log(highScores);

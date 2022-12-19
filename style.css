@@ -42,8 +42,12 @@ body {
 	font-size: 22px;
 }
 
-.btn {
+input {
 	font-size: 20px;
+	margin: 8px;
+}
+
+.btn {
 	align-self: flex-start;
 	padding: 10px;
 	align-self: center;
@@ -53,6 +57,10 @@ body {
 	grid-column: span 2;
 	color: orangered;
 	text-align: center;
+}
+
+[active="false"] {
+	background-color: gray;
 }
 
 [selected="true"] {
@@ -65,4 +73,20 @@ body {
 
 [error="true"] {
 	background-color: orangered;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }

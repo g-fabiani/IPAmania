@@ -55,6 +55,66 @@ function resetCardAttributes(cardNode) {
 	cardNode.setAttribute("selected", "false");
 	cardNode.setAttribute("matched", "false");
 	cardNode.setAttribute("error", "false");
+	cardNode.setAttribute("active", "true");
+}
+
+function compare(a, b) {
+	if (a.penalties == b.penalties) {
+		return a.time - b.time;
+	} else {
+		return a.penalties - b.penalties;
+	}
+}
+
+function endGame() {
+		addText(messageNode, "Vittoria! Premi sul pulsante nuova partita per giocare ancora");
+		clearInterval(timer);
+
+		// Aggiunge il risultato del giocatore agli highscores
+		highScores.push({name: player, penalties: penalties, time: time/10});
+		highScores.sort(compare);
+		// Tiene solo i 3 risultati migliori
+		if (highScores.length > 3) {
+					highScores = highScores.slice(0, 3);
+		}
+
+		while (highScoresNode.childNodes.length > 0) {
+			highScoresNode.removeChild(highScoresNode.firstChild);
+		}
+
+		var tablerow = document.createElement("tr");
+
+		var nameCell = document.createElement("th"); 
+		var penaltiesCell = document.createElement("th"); 
+		var timeCell = document.createElement("th");
+
+		addText(nameCell, "Giocatore");
+		addText(penaltiesCell, "Penalità");
+		addText(timeCell, "Tempo");
+
+		tablerow.appendChild(nameCell);
+		tablerow.appendChild(penaltiesCell);
+		tablerow.appendChild(timeCell);
+
+		highScoresNode.appendChild(tablerow);
+
+		for (var i = 0; i < highScores.length; i++) {
+			var tablerow = document.createElement("tr");
+
+			var nameCell = document.createElement("td"); 
+			var penaltiesCell = document.createElement("td"); 
+			var timeCell = document.createElement("td"); 
+
+			addText(nameCell, highScores[i].name);
+			addText(penaltiesCell, highScores[i].penalties);
+			addText(timeCell, highScores[i].time);
+
+			tablerow.appendChild(nameCell);
+			tablerow.appendChild(penaltiesCell);
+			tablerow.appendChild(timeCell);
+
+			highScoresNode.appendChild(tablerow);
+		}
 }
 
 function checkMatch() {
@@ -65,16 +125,18 @@ function checkMatch() {
 		selectedSymbolNode.setAttribute("matched", "true");
 		selectedDescriptionNode.setAttribute("matched", "true");
 
+		selectedSymbolNode.setAttribute("active", "false");
+		selectedDescriptionNode.setAttribute("active", "false");
+
 		matched++;
 		if (matched == MATCHES) {
-			addText(messageNode, "Vittoria! Premi sul pulsante nuova partita per giocare ancora");
-			clearInterval(timer);
+			endGame();
 		}
 
 		deselectAll();
 
 	} else {
-		penalities++;
+		penalties++;
 		updateScore();
 
 		signalError();
@@ -83,7 +145,7 @@ function checkMatch() {
 }
 
 function updateScore() {
-	var s = "Penalità: " + String(penalities);
+	var s = "Penalità: " + String(penalties);
 
 	addText(scoreNode, s);
 }
@@ -103,9 +165,16 @@ function updateTimer() {
 
 function handlerNewGame() {
 	try {
+		player = playerNode.value;
+
+		if (!player) {
+			addText(messageNode, "Specificare un nome giocatore!");
+			return;
+		}
+
 		// Azzera successi, penalità e tempo
 		matched = 0;
-		penalities = 0;
+		penalties = 0;
 		time = 0;
 
 		// Toglie il messaggio
@@ -153,11 +222,13 @@ function handlerNewGame() {
 
 function handlerSymbolSelection() {
 	try {
-		// Non è possibile selezionare tessere che sono già state accoppiate
-		if (this.getAttribute("matched") == "true")
+		// Non è possibile selezionare tessere inattive
+		if (this.getAttribute("active") == "false")
 		{
 			return;
 		}
+
+		console.log(this);
 
 		if (selectedSymbolNode) {
 			// Cliccare su una tessera già selezionata la deseleziona
@@ -184,10 +255,12 @@ function handlerSymbolSelection() {
 
 function handlerDescriptionSelection() {
 	try {
-		// Non è possibile selezionare tessere che sono già state accoppiate
-		if (this.getAttribute("matched") == "true") {
+		// Non è possibile selezionare tessere inattive
+		if (this.getAttribute("active") == "false") {
 			return;
 		}
+
+		console.log(this);
 
 		if (selectedDescriptionNode) {
 			if (selectedDescriptionNode == this) {
@@ -216,13 +289,17 @@ var cardGridNode;
 var scoreNode;
 var timerNode;
 var messageNode;
+var playerNode;
+var highScoresNode;
 var symbolNodes = [];
 var descriptionNodes = [];
 
 var matched;
-var penalities;
+var penalties;
 var time;
 var timer;
+var player;
+var highScores = [];
 
 var selectedSymbolNode;
 var selectedDescriptionNode;
@@ -235,6 +312,8 @@ function handlerLoad() {
 		scoreNode = document.getElementById("score");
 		timerNode = document.getElementById("timer");
 		messageNode = document.getElementById("message");
+		playerNode = document.getElementById("player");
+		highScoresNode = document.getElementById('highscores');
 
 		for (var i = 0; i < MATCHES; i++) {
 
@@ -250,6 +329,9 @@ function handlerLoad() {
 			descriptionNode.setAttribute("class", "card description");
 			descriptionNode.id = descriptionId;
 
+			symbolNode.setAttribute("active", "false");
+			descriptionNode.setAttribute("active", "false");
+
 			cardGridNode.insertBefore(symbolNode, scoreNode);
 			cardGridNode.insertBefore(descriptionNode, scoreNode);
 
@@ -257,10 +339,10 @@ function handlerLoad() {
 			descriptionNodes.push(descriptionNode);
 		}
 
+		playerNode.value = "";
+
 		selectedSymbolNode = null;
 		selectedDescriptionNode = null;
-
-		handlerNewGame();
 
 		// Gestisce i click sul pulsante Nuova partita
 		newGameNode.onclick = handlerNewGame;
