@@ -1,8 +1,10 @@
 "use strict";
 
 // Costanti
-const MATCHES = 6;		// numero di coppie per round
+const MATCHES = 6;			// numero di coppie per round
+const MAX_HIGHSCORES = 3; 	// massimo numero di highscores visualizzati nella tabella
 const DELAY = 500;
+
 
 
 // Funzioni ausiliarie
@@ -10,9 +12,11 @@ const DELAY = 500;
 function pickN(array, n) {
 	// Sceglie casualmente cinque elementi da un array
 	var result = [];
+	var index;
+
 	for (var i = 0; i < n; i++) {
 		do {
-			var index = Math.trunc(Math.random() * array.length);
+			index = Math.trunc(Math.random() * array.length);
 		} while (result.includes(array[index]));
 		result.push(array[index]);
 	}
@@ -59,6 +63,10 @@ function resetCardAttributes(cardNode) {
 }
 
 function compare(a, b) {
+	/*Funzione ausiliaria che viene usata con sort per ordinare gli
+	highscores secondo i seguenti criteri:
+	fra due giocatori vince il giocatore con meno penalità;
+	a parità di numero di penalità vince il giocatore con tempo minore*/
 	if (a.penalties == b.penalties) {
 		return a.time - b.time;
 	} else {
@@ -95,21 +103,24 @@ function displayHighScores() {
 
 
 function endGame() {
-		addText(messageNode, "Vittoria! Premi sul pulsante nuova partita per giocare ancora");
-		clearInterval(timer);
+	// Operazioni da eseguire al termine della partita 
+	addText(messageNode, "Vittoria! Premi sul pulsante nuova partita per giocare ancora");
+	clearInterval(timer);
 
-		// Aggiunge il risultato del giocatore agli highscores
-		highScores.push({name: player, penalties: penalties, time: time/10});
-		highScores.sort(compare);
-		// Tiene solo i 3 risultati migliori
-		if (highScores.length > 3) {
-					highScores = highScores.slice(0, 3);
-		}
+	// Aggiunge il risultato del giocatore agli highscores
+	highScores.push({name: player, penalties: penalties, time: time/10});
+	highScores.sort(compare);
+	// Tiene solo i 3 risultati migliori
+	if (highScores.length > MAX_HIGHSCORES) {
+		highScores = highScores.slice(0, MAX_HIGHSCORES);
+	}
 
-		displayHighScores();
+	displayHighScores();
 }
 
 function checkMatch() {
+	/*Controlla se la tessera simbolo e la tessera descrizione selezionate
+	corrispondono e compie le operazioni adeguate al caso */
 	var selectedSymbol = selectedSymbolNode.textContent;
 	var selectedDescription = selectedDescriptionNode.textContent;
 
@@ -215,8 +226,7 @@ function handlerNewGame() {
 function handlerSymbolSelection() {
 	try {
 		// Non è possibile selezionare tessere inattive
-		if (this.getAttribute("active") == "false")
-		{
+		if (this.getAttribute("active") == "false") {
 			return;
 		}
 
@@ -245,7 +255,7 @@ function handlerSymbolSelection() {
 
 function handlerDescriptionSelection() {
 	try {
-		// Non è possibile selezionare tessere inattive
+			// Non è possibile selezionare tessere inattive
 		if (this.getAttribute("active") == "false") {
 			return;
 		}
@@ -259,10 +269,11 @@ function handlerDescriptionSelection() {
 			}
 			selectedDescriptionNode.setAttribute("selected", "false");
 		}
-			selectedDescriptionNode = this;
-			selectedDescriptionNode.setAttribute("selected", "true");
+		
+		selectedDescriptionNode = this;
+		selectedDescriptionNode.setAttribute("selected", "true");
 
-
+		// se sono stati selezionati un simbolo e una descrizione
 		if (selectedSymbolNode && selectedDescriptionNode){
 			checkMatch();
 		}
@@ -279,9 +290,11 @@ var timerNode;
 var messageNode;
 var playerNode;
 var highScoresNode;
+
 var symbolNodes = [];
 var descriptionNodes = [];
 
+// Stato dell'applicazione
 var matched;
 var penalties;
 var time;
@@ -327,8 +340,10 @@ function handlerLoad() {
 			descriptionNodes.push(descriptionNode);
 		}
 
+		// Resetta il campo di testo Nome giocatore
 		playerNode.value = "";
 
+		// Nessuna tessera risulta selezionata all'inizio
 		selectedSymbolNode = null;
 		selectedDescriptionNode = null;
 
@@ -353,9 +368,9 @@ function handlerLoad() {
 
 window.onload = handlerLoad;
 
-/*
-Per ogni vocale dell'Alfabeto Fonetico Internazionale associamo simbolo e descrizione
-*/
+
+// Per ogni vocale dell'Alfabeto Fonetico Internazionale associamo simbolo e descrizione
+
 const IPA_VOWELS = {
 	"\u0069" : "Vocale anteriore chiusa non arrotondata",
 	"\u0079" :"Vocale anteriore chiusa arrotondata",

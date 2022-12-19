@@ -14,26 +14,6 @@ input {
 	margin: 8px;
 }
 
-
-table {
-  border: solid;
-  border-radius: 10px;
-  width: 100%;
-}
-
-td, th {
-  text-align: left;
-	padding: 4px;
-}
-
-tr:nth-child(odd) {
-  background-color: lightgray;
-}
-
-th {
-	background-color: white;
-}
-
 .grid-container {
 	display: grid;
 	grid-template-columns: auto auto;
@@ -95,4 +75,23 @@ th {
 
 [error="true"] {
 	background-color: orangered;
+}
+
+table {
+  border: solid;
+  border-radius: 10px;
+  width: 100%;
+}
+
+td, th {
+  text-align: left;
+	padding: 4px;
+}
+
+tr:nth-child(odd) {
+  background-color: lightgray;
+}
+
+th {
+	background-color: white;
 }
