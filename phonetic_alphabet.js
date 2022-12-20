@@ -175,6 +175,9 @@ function handlerNewGame() {
 			return;
 		}
 
+		// Deseleziona tutte le tessere precedentemente selezionate
+		deselectAll();
+
 		// Azzera successi, penalità e tempo
 		matched = 0;
 		penalties = 0;
@@ -223,16 +226,16 @@ function handlerNewGame() {
 	}
 }
 
-function handlerSymbolSelection() {
+function handlerSymbolSelection(event) {
 	try {
 		// Non è possibile selezionare tessere inattive
-		if (this.getAttribute("active") == "false") {
+		if (event.target.getAttribute("active") == "false") {
 			return;
 		}
 
 		if (selectedSymbolNode) {
 			// Cliccare su una tessera già selezionata la deseleziona
-			if (selectedSymbolNode == this) {
+			if (selectedSymbolNode == event.target) {
 				selectedSymbolNode.setAttribute("selected", "false");
 				selectedSymbolNode = null;
 				return; 
@@ -240,7 +243,7 @@ function handlerSymbolSelection() {
 			selectedSymbolNode.setAttribute("selected", "false");
 		}
 
-		selectedSymbolNode = this;
+		selectedSymbolNode = event.target;
 		selectedSymbolNode.setAttribute("selected", "true");
 
 		// Se sono stati selezionati un simbolo e una descrizione
@@ -253,15 +256,15 @@ function handlerSymbolSelection() {
 	}
 }
 
-function handlerDescriptionSelection() {
+function handlerDescriptionSelection(event) {
 	try {
 			// Non è possibile selezionare tessere inattive
-		if (this.getAttribute("active") == "false") {
+		if (event.target.getAttribute("active") == "false") {
 			return;
 		}
 
 		if (selectedDescriptionNode) {
-			if (selectedDescriptionNode == this) {
+			if (selectedDescriptionNode == event.target) {
 				// Cliccare su una tessera già selezionata la deseleziona
 				selectedDescriptionNode.setAttribute("selected", "false");
 				selectedDescriptionNode = null;
@@ -270,7 +273,7 @@ function handlerDescriptionSelection() {
 			selectedDescriptionNode.setAttribute("selected", "false");
 		}
 		
-		selectedDescriptionNode = this;
+		selectedDescriptionNode = event.target;
 		selectedDescriptionNode.setAttribute("selected", "true");
 
 		// se sono stati selezionati un simbolo e una descrizione
